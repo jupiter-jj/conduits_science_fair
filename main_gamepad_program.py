@@ -2,10 +2,8 @@
 #Jeanelle Dao
 #9 October 2021
 #ONLY RUNNABLE ON WINDOWS PYTHON (3.9)
-#check 2
 
 """
-
 
 Sample Python/Pygame Programs
 Simpson College Computer Science
@@ -95,28 +93,46 @@ while not done:
         # JOYBUTTONUP JOYHATMOTION
         button_press_list = []
         button_press_value = 10
+
+        #run is button is pressed
         if event.type == pygame.JOYBUTTONDOWN:
             print("Joystick button pressed.")
             for i in range(buttons):
                 button = joystick.get_button(i)
-                button_press_list.append(button)
+                print("button: ", button)
+                print("enter list: ", passwordEnterList[-1])
+                if i == passwordEnterList[-1] and button == 1: #if button was previously pressed
+                    button_press_list.append(0) #ignore
+                else:
+                    button_press_list.append(button) #otherwise append button (0/1)
+
+            #determine button press value
             print(button_press_list)
-            button_press_value = button_press_list.index(1)
+            button_press_value_str = ""
+            for value in button_press_list:
+                button_press_value_str += str(value)
+            button_press_value = button_press_value_str.find("1") #first occuring "1"
             print(button_press_value)
-            if len(passwordEnterList) <= 5:
-                if passwordEnterList[-1] != button_press_value:
+
+            if button_press_value != -1:
+                if len(passwordEnterList) <= 5:
+                    #if there are not 6 digits in passwordEnterList
                     passwordEnterList.append(int(button_press_value))
-                    print(passwordEnterList)
-            else:
-                if passwordEnterList[-1] != button_press_value:
+                    print("\nPASSWORD ENTER LIST:", passwordEnterList)
+                else:
+                    #if there are 6 digits, add new digit, remove earliest chosen digit
                     passwordEnterList.append(int(button_press_value))
                     passwordEnterList.pop(0)
-                    print(passwordEnterList) 
+                    print("\nPASSWORD ENTER LIST:", passwordEnterList)
+            else:
+                print("\nnothing added to password enter list")
 
+        #if password entered correctly --> open
         if passwordList == passwordEnterList:
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
-            
+
+        #debugging
         if event.type == pygame.JOYBUTTONUP:
             print("Joystick button released.")
  
