@@ -82,18 +82,29 @@ passwordList = []
 for digit in password:
   passwordList.append(int(digit))
 
+dead_button_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 # -------- Main Program Loop -----------
 while not done:
     # EVENT PROCESSING STEP
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
- 
+            
         # Possible joystick actions: JOYAXISMOTION JOYB0ALLMOTION JOYBUTTONDOWN
         # JOYBUTTONUP JOYHATMOTION
         button_press_list = []
         button_press_value = 10
 
+
+        #debugging
+        if event.type == pygame.JOYBUTTONUP:
+            for i in range(buttons):
+                button = joystick.get_button(i)
+                if button == 0:
+                    dead_button_list[i] = 0
+                    print("DEAD BUTTONS: ", dead_button_list)
+    
         #run is button is pressed
         if event.type == pygame.JOYBUTTONDOWN:
             print("Joystick button pressed.")
@@ -101,7 +112,8 @@ while not done:
                 button = joystick.get_button(i)
                 print("button: ", button)
                 print("enter list: ", passwordEnterList[-1])
-                if i == passwordEnterList[-1] and button == 1: #if button was previously pressed
+                print("dead buttons: ", dead_button_list[i])
+                if dead_button_list[i] == 1: #if button was previously pressed
                     button_press_list.append(0) #ignore
                 else:
                     button_press_list.append(button) #otherwise append button (0/1)
@@ -125,16 +137,20 @@ while not done:
                     passwordEnterList.pop(0)
                     print("\nPASSWORD ENTER LIST:", passwordEnterList)
             else:
-                print("\nnothing added to password enter list")
+                print("\nothing added to password enter list")
+
+            
+            dead_button_list[button_press_value] = 1
+            print(button_press_value)
+            print(dead_button_list[button_press_value])
+            print("DEAD BUTTONS: ", dead_button_list)
 
         #if password entered correctly --> open
         if passwordList == passwordEnterList:
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
 
-        #debugging
-        if event.type == pygame.JOYBUTTONUP:
-            print("Joystick button released.")
+#-------------------------------------------------------------------------------------------------------------------------#
  
     # DRAWING STEP
     # First, clear the screen to white. Don't put other drawing commands
