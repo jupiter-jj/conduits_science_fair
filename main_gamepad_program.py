@@ -60,6 +60,7 @@ size = [500, 700]
 screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("My Game")
+import time
  
 # Loop until the user clicks the close button.
 done = False
@@ -83,6 +84,8 @@ for digit in password:
   passwordList.append(int(digit))
 
 dead_button_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+lock_timer_start = False
+lock_clock_time = time.time()
 
 # -------- Main Program Loop -----------
 while not done:
@@ -102,8 +105,16 @@ while not done:
             for i in range(buttons):
                 button = joystick.get_button(i)
                 if button == 0:
-                    dead_button_list[i] = 0
+                    dead_button_list[i]= 0
                     print("DEAD BUTTONS: ", dead_button_list)
+            if lock_timer_start:
+                if time.time() - lock_clock_time >= 2: #change number here to change lock delay
+                    print(time.time() - lock_clock_time)
+                    print("\nLOCK\n")
+                else:
+                    print(time.time() - lock_clock_time)
+                    
+                    
     
         #run is button is pressed
         if event.type == pygame.JOYBUTTONDOWN:
@@ -117,7 +128,7 @@ while not done:
                     button_press_list.append(0) #ignore
                 else:
                     button_press_list.append(button) #otherwise append button (0/1)
-
+                
             #determine button press value
             print(button_press_list)
             button_press_value_str = ""
@@ -125,27 +136,33 @@ while not done:
                 button_press_value_str += str(value)
             button_press_value = button_press_value_str.find("1") #first occuring "1"
             print(button_press_value)
+            if button_press_value == 8 or button_press_value == 9:
+                lock_timer_start = True
+                lock_clock_time = time.time()
+                
 
-            if button_press_value != -1:
-                if len(passwordEnterList) <= 5:
-                    #if there are not 6 digits in passwordEnterList
-                    passwordEnterList.append(int(button_press_value))
-                    print("\nPASSWORD ENTER LIST:", passwordEnterList)
-                else:
-                    #if there are 6 digits, add new digit, remove earliest chosen digit
-                    passwordEnterList.append(int(button_press_value))
-                    passwordEnterList.pop(0)
-                    print("\nPASSWORD ENTER LIST:", passwordEnterList)
             else:
-                print("\nothing added to password enter list")
+                if button_press_value != -1:
+                    if len(passwordEnterList) <= 5:
+                        #if there are not 6 digits in passwordEnterList
+                        passwordEnterList.append(int(button_press_value))
+                        print("\nPASSWORD ENTER LIST:", passwordEnterList)
+                    else:
+                        #if there are 6 digits, add new digit, remove earliest chosen digit
+                        passwordEnterList.append(int(button_press_value))
+                        passwordEnterList.pop(0)
+                        print("\nPASSWORD ENTER LIST:", passwordEnterList)
+                else:
+                    print("\nothing added to password enter list")
 
-            
-            dead_button_list[button_press_value] = 1
-            print(button_press_value)
-            print(dead_button_list[button_press_value])
-            print("DEAD BUTTONS: ", dead_button_list)
+                
+                dead_button_list[button_press_value] = 1
+                print(button_press_value)
+                print(dead_button_list[button_press_value])
+                print("DEAD BUTTONS: ", dead_button_list)
 
         #if password entered correctly --> open
+
         if passwordList == passwordEnterList:
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
@@ -168,24 +185,11 @@ while not done:
     for i in range(joystick_count):
         joystick = pygame.joystick.Joystick(i)
         joystick.init()
- 
-        textPrint.print(screen, "Joystick {}".format(i))
-        textPrint.indent()
- 
+  
         # Get the name from the OS for the controller/joystick
         name = joystick.get_name()
         textPrint.print(screen, "Joystick name: {}".format(name))
- 
-        # Usually axis run in pairs, up/down for one, and left/right for
-        # the other.
-        axes = joystick.get_numaxes()
-        textPrint.print(screen, "Number of axes: {}".format(axes))
-        textPrint.indent()
- 
-        for i in range(axes):
-            axis = joystick.get_axis(i)
-            textPrint.print(screen, "Axis {} value: {:>6.3f}".format(i, axis))
-        textPrint.unindent()
+
  
         buttons = joystick.get_numbuttons()
         textPrint.print(screen, "Number of buttons: {}".format(buttons))
@@ -194,17 +198,6 @@ while not done:
         for i in range(buttons):
             button = joystick.get_button(i)
             textPrint.print(screen, "Button {} value: {}".format(i, button))
-        textPrint.unindent()
- 
-        # Hat switch. All or nothing for direction, not like joysticks.
-        # Value comes back in an array.
-        hats = joystick.get_numhats()
-        textPrint.print(screen, "Number of hats: {}".format(hats))
-        textPrint.indent()
- 
-        for i in range(hats):
-            hat = joystick.get_hat(i)
-            textPrint.print(screen, "Hat {} value: {}".format(i, str(hat)))
         textPrint.unindent()
  
         textPrint.unindent()
