@@ -4,6 +4,12 @@
 #ONLY RUNNABLE ON WINDOWS PYTHON (3.9)
 
 import pygame
+import RPi.GPIO as GPIO
+import time
+#set GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(20, GPIO.OUT)
+GPIO.setup(21, GPIO.OUT)
  
 # Define some colors
 BLACK = (0, 0, 0)
@@ -51,7 +57,6 @@ size = [500, 700]
 screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("My Game")
-import time
  
 # Loop until the user clicks the close button.
 done = False
@@ -99,9 +104,11 @@ while not done:
                     dead_button_list[i]= 0
                     print("DEAD BUTTONS: ", dead_button_list)
             if lock_timer_start:
-                if time.time() - lock_clock_time >= 2: #change number here to change lock delay
+                if time.time() - lock_clock_time >= 1: #change number here to change lock delay
                     print(time.time() - lock_clock_time)
-                    print("\nLOCK\n")
+                    GPIO.output(21, True)
+                    time.sleep(1)
+                    GPIO.output(21, False)
                 else:
                     print(time.time() - lock_clock_time)
                 lock_timer_start = False
@@ -156,6 +163,9 @@ while not done:
         #if password entered correctly --> open
 
         if passwordList == passwordEnterList:
+            GPIO.output(20, True)
+            time.sleep(1)
+            GPIO.output(20, False)
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
 
@@ -180,7 +190,7 @@ while not done:
   
         # Get the name from the OS for the controller/joystick
         name = joystick.get_name()
-        textPrint.print(screen, "Joystick name: {}".format(name))z
+        textPrint.print(screen, "Joystick name: {}".format(name))
 
  
         buttons = joystick.get_numbuttons()
@@ -205,4 +215,6 @@ while not done:
 # Close the window and quit.
 # If you forget this line, the program will 'hang'
 # on exit if running from IDLE.
+GPIO.output(21, False)
+GPIO.output(20, False)
 pygame.quit()
