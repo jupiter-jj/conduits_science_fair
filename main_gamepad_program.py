@@ -104,6 +104,7 @@ while not done:
                     print("\nLOCK\n")
                 else:
                     print(time.time() - lock_clock_time)
+                lock_timer_start = False
                     
                     
     
