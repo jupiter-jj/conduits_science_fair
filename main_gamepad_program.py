@@ -3,15 +3,6 @@
 #9 October 2021
 #ONLY RUNNABLE ON WINDOWS PYTHON (3.9)
 
-"""
-
-Sample Python/Pygame Programs
-Simpson College Computer Science
-http://programarcadegames.com/
-http://simpson.edu/computer-science/
- 
-Show everything we can pull off the joystick
-"""
 import pygame
  
 # Define some colors
@@ -188,7 +179,7 @@ while not done:
   
         # Get the name from the OS for the controller/joystick
         name = joystick.get_name()
-        textPrint.print(screen, "Joystick name: {}".format(name))
+        textPrint.print(screen, "Joystick name: {}".format(name))z
 
  
         buttons = joystick.get_numbuttons()
