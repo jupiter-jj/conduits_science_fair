@@ -83,6 +83,9 @@ dead_button_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 lock_timer_start = False
 lock_clock_time = time.time()
 
+reset_pass_timer_start = False
+reset_pass_clock_time = time.time()
+
 # -------- Main Program Loop -----------
 while not done:
     # EVENT PROCESSING STEP
@@ -112,6 +115,11 @@ while not done:
                 else:
                     print(time.time() - lock_clock_time)
                 lock_timer_start = False
+            
+            if reset_pass_timer_start:
+                if time.time() - reset_pass_clock_time >= 1:
+                    print("NEW PASSWORD")
+                    #CONTINUE HERE -----------------------------------------
                     
                     
     
@@ -138,8 +146,10 @@ while not done:
             if button_press_value == 8 or button_press_value == 9:
                 lock_timer_start = True
                 lock_clock_time = time.time()
+            if unlocked == True and button_press_value == 1:
+                reset_pass_time_start = True
+                reset_pass_time = time.time()
                 
-
             else:
                 if button_press_value != -1:
                     if len(passwordEnterList) <= 5:
@@ -166,8 +176,10 @@ while not done:
             GPIO.output(20, True)
             time.sleep(1)
             GPIO.output(20, False)
+            unlocked = True
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
+         
 
 #-------------------------------------------------------------------------------------------------------------------------#
  
