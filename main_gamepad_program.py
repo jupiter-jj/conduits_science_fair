@@ -119,7 +119,11 @@ while not done:
             if reset_pass_timer_start:
                 if time.time() - reset_pass_clock_time >= 1:
                     print("NEW PASSWORD")
-                    #CONTINUE HERE -----------------------------------------
+                    button_press_list = [10]
+                    if len(button_press_list) == 6 and button_press_list[0] != 10:
+                        password = join(button_press_list)
+                        button_press_list = [10]
+                        reset_pass_timer_start = False
                     
                     
     
@@ -146,6 +150,8 @@ while not done:
             if button_press_value == 8 or button_press_value == 9:
                 lock_timer_start = True
                 lock_clock_time = time.time()
+              
+            #new password (next six presses become password)
             if unlocked == True and button_press_value == 1:
                 reset_pass_time_start = True
                 reset_pass_time = time.time()
@@ -205,7 +211,7 @@ while not done:
         textPrint.print(screen, "Joystick name: {}".format(name))
 
  
-        buttons = joystick.get_numbuttons()
+      		buttons = joystick.get_numbuttons()
         textPrint.print(screen, "Number of buttons: {}".format(buttons))
         textPrint.indent()
  
