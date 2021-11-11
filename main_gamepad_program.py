@@ -85,6 +85,7 @@ lock_clock_time = time.time()
 
 reset_pass_timer_start = False
 reset_pass_clock_time = time.time()
+unlocked = None
 
 # -------- Main Program Loop -----------
 while not done:
@@ -112,6 +113,7 @@ while not done:
                     GPIO.output(21, True)
                     time.sleep(1)
                     GPIO.output(21, False)
+                    unlocked = False
                 else:
                     print(time.time() - lock_clock_time)
                 lock_timer_start = False
