@@ -6,6 +6,7 @@
 import pygame
 import RPi.GPIO as GPIO
 import time
+
 #set GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(20, GPIO.OUT)
@@ -73,7 +74,22 @@ textPrint = TextPrint()
 
 button_down = False
 passwordEnterList = [10]
-password = "023167"
+#access file of password
+
+#----------#
+
+#open text file in read mode
+text_file = open("password.txt", "r")
+ 
+#read whole file to a string
+password = text_file.read()
+ 
+#close file
+text_file.close()
+ 
+#----------#
+ 
+print(password)
 passwordList = []
 
 for digit in password:
@@ -82,10 +98,6 @@ for digit in password:
 dead_button_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 lock_timer_start = False
 lock_clock_time = time.time()
-
-reset_pass_timer_start = False
-reset_pass_clock_time = time.time()
-unlocked = None
 
 # -------- Main Program Loop -----------
 while not done:
@@ -113,19 +125,9 @@ while not done:
                     GPIO.output(21, True)
                     time.sleep(1)
                     GPIO.output(21, False)
-                    unlocked = False
                 else:
                     print(time.time() - lock_clock_time)
                 lock_timer_start = False
-            
-            if reset_pass_timer_start:
-                if time.time() - reset_pass_clock_time >= 1:
-                    print("NEW PASSWORD")
-                    button_press_list = [10]
-                    if len(button_press_list) == 6 and button_press_list[0] != 10:
-                        password = join(button_press_list)
-                        button_press_list = [10]
-                        reset_pass_timer_start = False
                     
                     
     
@@ -152,12 +154,8 @@ while not done:
             if button_press_value == 8 or button_press_value == 9:
                 lock_timer_start = True
                 lock_clock_time = time.time()
-              
-            #new password (next six presses become password)
-            if unlocked == True and button_press_value == 1:
-                reset_pass_time_start = True
-                reset_pass_time = time.time()
                 
+
             else:
                 if button_press_value != -1:
                     if len(passwordEnterList) <= 5:
@@ -184,10 +182,8 @@ while not done:
             GPIO.output(20, True)
             time.sleep(1)
             GPIO.output(20, False)
-            unlocked = True
             print("\n\nOPEN\n\n")
             passwordEnterList = [10]
-         
 
 #-------------------------------------------------------------------------------------------------------------------------#
  
@@ -213,7 +209,7 @@ while not done:
         textPrint.print(screen, "Joystick name: {}".format(name))
 
  
-      		buttons = joystick.get_numbuttons()
+        buttons = joystick.get_numbuttons()
         textPrint.print(screen, "Number of buttons: {}".format(buttons))
         textPrint.indent()
  
