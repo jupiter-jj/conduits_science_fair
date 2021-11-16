@@ -16,7 +16,19 @@ GPIO.setup(26, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #set variables
 passwordEnterList = []
 unlockList = [False, False, False, False, False, False]
-passwordList = [0.1, 0.1, 1, 0.1, 0.1, 0.1]
+
+#--------------#
+
+#open text file in read mode
+text_file = open("password.txt", "r")
+ 
+#read whole file to a string
+passwordList = text_file.read()
+ 
+#close file
+text_file.close()
+
+#--------------#
 
 button = 3
 last_button = 3
