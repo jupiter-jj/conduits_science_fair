@@ -2,7 +2,9 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 
-// setting all variables
+//----------------------------------------------------------------
+
+// setting all variables below
 // constants won't change. They're used here to set pin numbers:
 const int buttonPin = 2;    // the number of the pushbutton pin
 const int unlockPin = 11;      // number of pin connected to *unlock* on remote
