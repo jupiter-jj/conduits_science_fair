@@ -2,13 +2,13 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 
-//----------------------------------------------------------------
-
-// setting all variables below
+// setting all variables
 // constants won't change. They're used here to set pin numbers:
 const int buttonPin = 2;    // the number of the pushbutton pin
 const int unlockPin = 11;      // number of pin connected to *unlock* on remote
+const int ledunlockPin = 14;      // number of pin connected to *unlock* on remote
 const int lockPin = 12;      // number of pin connected to *lock* on remote
+const int ledlockPin = 15;      // number of pin connected to *lock* on remote
 const int ledPin = 13;      // the number of the LED pin
 
 // the following variables are unsigned longs because the time, measured in
@@ -80,15 +80,15 @@ void sleepNow(){
   sleep_disable();
   detachInterrupt(digitalPinToInterrupt(2));
 
-  // set initial LED state
-  digitalWrite(lockPin, HIGH);
-  digitalWrite(unlockPin, HIGH);
+  // use leds to signal mat on
+  digitalWrite(ledlockPin, HIGH);
+  digitalWrite(ledunlockPin, HIGH);
   digitalWrite(ledPin, HIGH);
 
   delay(1000);
 
-  digitalWrite(lockPin, LOW);
-  digitalWrite(unlockPin, LOW);
+  digitalWrite(ledlockPin, LOW);
+  digitalWrite(ledunlockPin, LOW);
   digitalWrite(ledPin, LOW);
   
   idle_clock_time = millis();
@@ -109,6 +109,8 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(lockPin, OUTPUT);
   pinMode(unlockPin, OUTPUT);
+  pinMode(ledlockPin, OUTPUT);
+  pinMode(ledunlockPin, OUTPUT);
   
   for(int i = 0; i < 6; i++){
     unlockList[i] = 0;
@@ -117,15 +119,15 @@ void setup() {
   Serial.begin(9600);
   Serial.println("button press value\n");
 
-  // set initial LED state
-  digitalWrite(lockPin, HIGH);
-  digitalWrite(unlockPin, HIGH);
+  // set LED state to high to signla mat is on
+  digitalWrite(ledlockPin, HIGH);
+  digitalWrite(ledunlockPin, HIGH);
   digitalWrite(ledPin, HIGH);
 
   delay(500);
 
-  digitalWrite(lockPin, LOW);
-  digitalWrite(unlockPin, LOW);
+  digitalWrite(ledlockPin, LOW);
+  digitalWrite(ledunlockPin, LOW);
   digitalWrite(ledPin, LOW);
 
 }
@@ -143,8 +145,10 @@ void loop() {
       if (button_press_value >= 5000){
         Serial.println("\nLOCK\n");
         digitalWrite(lockPin, HIGH);
+        digitalWrite(ledlockPin, HIGH);
         delay(3000);
         digitalWrite(lockPin, LOW);
+        digitalWrite(ledlockPin, LOW);
         for(int i = 0; i < 6; i++){
           passwordEnterList[i] = 0;
         }
@@ -154,15 +158,15 @@ void loop() {
         //if there are 6 digits, add new digit, remove earliest chosen digit
         //uses function pushEnterList
         if ((button_press_value >= 50) && (button_press_value <= 1000)) {
-          digitalWrite(unlockPin, HIGH);
+          digitalWrite(ledunlockPin, HIGH);
           delay(200);
-          digitalWrite(unlockPin, LOW);
+          digitalWrite(ledunlockPin, LOW);
         }
 
         if ((button_press_value > 500) && (button_press_value <= 1500)) {
-          digitalWrite(lockPin, HIGH);
+          digitalWrite(ledlockPin, HIGH);
           delay(200);
-          digitalWrite(lockPin, LOW);
+          digitalWrite(ledlockPin, LOW);
         }
         pushEnterList(button_press_value);
       }
@@ -192,8 +196,10 @@ void loop() {
   if ((unlockList[0] == 1) && (unlockList[1] == 1) && (unlockList[2] == 1) && (unlockList[3] == 1) && (unlockList[4] == 1) && (unlockList[5] == 1)){
     Serial.println("\nUNLOCK\n");
     digitalWrite(unlockPin, HIGH);
+    digitalWrite(ledunlockPin, HIGH);
     delay(3000);
     digitalWrite(unlockPin, LOW);
+    digitalWrite(ledunlockPin, LOW);
     for(int i = 0; i < 6; i++){
       passwordEnterList[i] = 100000;
     for(int i = 0; i < 6; i++){
